@@ -1,93 +1,49 @@
-# ArpeScanner
-
-Scanner de arquivos em rede para o setor de Tarifas da ARPE. Detecta duplicatas exatas, múltiplas versões de um mesmo arquivo e lista os arquivos mais pesados — tudo via terminal, com exportação opcional para Excel.
-
----
-
-## O que faz
-
-| Detecção | Como funciona |
-|---|---|
-| **Duplicatas** | Compara arquivos por hash SHA-256 — encontra cópias exatas mesmo com nomes diferentes |
-| **Múltiplas versões** | Agrupa arquivos pelo nome base, ignorando sufixos como `(1)`, `_copia`, `_v2`, `_final`, `_old`, etc. |
-| **Arquivos pesados** | Lista os N maiores arquivos da pasta varrida |
-
----
-
+# 🔍 ArpeScanner
+ 
+Ferramenta de linha de comando para escaneamento e auditoria de unidades de rede, desenvolvida para o setor de Tarifas da **ARPE** (Agência Reguladora de Pernambuco).
+ 
+## O que faz?
+ 
+O ArpeScanner varre diretórios de rede e gera um relatório completo identificando:
+ 
+- **Arquivos duplicados/versionados** — agrupa arquivos com nomes semelhantes (cópias, versões `_v1`, `_v2`, `_final`, etc.) e calcula o espaço desperdiçado.
+- **Top 15 arquivos mais pesados** — lista os maiores consumidores de espaço no diretório escaneado.
+- **Relatório em Excel** — exporta todos os resultados em um `.xlsx` organizado para análise.
+## Exemplo de saída
+ 
+```
+══════════════════════════════════════════════════════════
+  Espaço desperdiçado:      157.8 MB
+  Grupos com versões:       23
+  Excel gerado:             Z:\...\scanner_rede_20260702_094052.xlsx
+══════════════════════════════════════════════════════════
+```
+ 
 ## Requisitos
-
-- Python 3.8+
-- `openpyxl` (necessário apenas para exportação Excel)
-
+ 
+- Python 3.10+
+- Dependências:
 ```bash
 pip install openpyxl
 ```
-
----
-
-## Uso
-
+ 
+## Como usar
+ 
 ```bash
-python scanner_rede.py <PASTA> [--top N] [--export]
+python scanner_rede.py
 ```
-
-### Exemplos
-
-```bash
-# Varredura básica com relatório no terminal
-python scanner_rede.py "Z:\Tarifas"
-
-# Mostrar os 20 arquivos mais pesados
-python scanner_rede.py "Z:\Tarifas" --top 20
-
-# Varredura completa + exportar para Excel
-python scanner_rede.py "Z:\Tarifas" --export
-
-# Caminho de rede (UNC)
-python scanner_rede.py "\\servidor\compartilhamento\Tarifas" --export
-```
-
-### Argumentos
-
-| Argumento | Descrição |
-|---|---|
-| `<PASTA>` | Caminho da pasta ou unidade de rede a varrer (obrigatório) |
-| `--top N` | Quantidade de arquivos pesados a exibir (padrão: 15) |
-| `--export` | Gera um arquivo `.xlsx` na pasta varrida com os resultados |
-
----
-
-## Saída
-
-### Terminal
-O relatório exibe três seções coloridas:
-
-- **Vermelho** — grupos de duplicatas com tamanho desperdiçado por grupo e total
-- **Amarelo** — grupos de versões múltiplas com nome base, pasta e data de modificação
-- **Azul** — ranking dos arquivos mais pesados
-
-### Excel (com `--export`)
-Gera `scanner_rede_YYYYMMDD_HHMMSS.xlsx` com quatro abas:
-
-| Aba | Conteúdo |
-|---|---|
-| `Duplicados` | Grupos com hash, caminho completo e espaço desperdiçado |
-| `Versões` | Grupos de versões com nome base, pasta e data de modificação |
-| `Pesados` | Ranking dos arquivos mais pesados com extensão |
-| `Resumo` | Totais gerais da varredura |
-
----
-
-## Sufixos reconhecidos como "versão"
-
-O scanner ignora os seguintes padrões ao agrupar versões:
-
-`(1)` `(2)` · `- Cópia` · `_v1` `_v2` · `_old` · `_final` · `_novo` · `_revisado` · `_corrigido` · `_atualizado` · `_backup` · `_bkp` · `FINAL` · `REVISADO` · `OK` · `NOVO` · `_YYYYMMDD`
-
----
-
-## Notas
-
-- Arquivos menores que 1 KB são ignorados na busca de duplicatas.
-- Arquivos inacessíveis por permissão são listados ao final do relatório, sem interromper a execução.
-- O hash é calculado em blocos de 64 KB para não sobrecarregar a memória em arquivos grandes.
+ 
+O script solicita o caminho do diretório de rede a ser escaneado e gera o relatório Excel no mesmo diretório.
+ 
+## Stack
+ 
+- **Python** — lógica de escaneamento e agrupamento por similaridade de nomes
+- **openpyxl** — geração do relatório Excel
+## Contexto
+ 
+Desenvolvido para otimizar a gestão de arquivos regulatórios no setor de Transportes/Tarifas da ARPE, onde o acúmulo de versões e cópias em unidades de rede compartilhadas gera desperdício significativo de espaço.
+ 
+## Autor
+ 
+**Leandro Morais** — Estagiário de Desenvolvimento, ARPE  
+[GitHub](https://github.com/jleandromorais)
